@@ -1,0 +1,24 @@
+Pentru aceasta tema am folosit pentru managementul task-urilor un Fork Join Pool
+initializat cu maxim P thread-uri (cate se citesc din linia de comanda).
+
+Initial in pool adaug task-uri de tip OrdersTask, adica cele care se ocupa de
+citirea fisierului "orders.txt", impartirea acestuia pe bucati conform indicelui
+thread-ului executant, si mai apoi crearea de alte task-uri de tip ProductTask.
+
+Task-urile de tip ProductTask sunt responsabil de citirea fisierului "order_products.txt"
+si cautarea id-ului comenzii dat de OrdersTask. Cand gasesc acest id, marcheaza produsul
+respectiv ca fiind shipped. Dupa ce toate produsele din comanda sunt shipped, acesta
+trimite o notificare catre OrdersTask spunandu-i ca a incheiat executia. In acel moment,
+instanta de OrdersTask iese din wait si scrie in fisierul "orders_out.txt" faptul
+ca acea comanda a fost shipped.
+
+Pentru a interactiona cu fisierele, am creat o noua clasa cu metode statice numita FileHelper.
+Aceasta contine metode pentru a marca un produs sau o comanda ca shipped(deschizand fisierul
+in modul append si adaugand id-ul corespunzator alaturi de textul 'shipped') sau citirea tuturor
+liniilor dintr-un fisier. Din cauza faptului ca la fiecare test se doreste ca fisierul de output
+sa nu contina si produsele/comenzile din testele anterioare, in FileHelper verific daca este
+prima accesare a fisierului sau nu. In cazul in care este prima accesare, sterg datele din fisier
+inainte de a-l deschide in modul append si a scrie in el.
+
+In clasa Data stochez datele utile unei linii citita din fisierele de input, cum ar fi id-ul
+comenzii, id-ul produsului si numarul de produse comandate.
